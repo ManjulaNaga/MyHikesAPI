@@ -1,6 +1,11 @@
 'use strict';
 module.exports = function(app){
-  var hike = require('../../dbConnection');
+  var hikeconn = require('../../dbConnection');
+  var hike = require("../Controller/hikesdataController");
+  app.route('/')
+    .get(  function(req,res){
+      res.send("Welcome to My Hikes API ");
+    });
 
   //hike routes
   app.route('/users')
