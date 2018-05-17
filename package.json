@@ -1,0 +1,14 @@
+{
+  "name": "testapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dbConnection.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "author": "manju",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
