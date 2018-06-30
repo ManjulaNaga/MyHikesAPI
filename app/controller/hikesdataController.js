@@ -1,10 +1,10 @@
 'use strict';
 
-var connection = require("../../dbConnection");
+var conPool = require("../../dbConnection");
 
 exports.list_all_users = function(req,res){
   var sql = "select * from myhikesDB.users";
-  connection.query(sql, function(err,rows,fields){
+  conPool.query(sql, function(err,rows,fields){
     if(!err)
     {
       console.log("users are  as follows");
@@ -14,7 +14,7 @@ exports.list_all_users = function(req,res){
     }
     else
     console.log("error while performing the query" +err);
-    //close connection
+    //close
     res.send(err);
   });
 };
@@ -32,8 +32,8 @@ exports.store_user_loginCred = function(req,res){
   console.log(JSON.stringify(insertdata));
 //bulk insert using nested array[[a,b],[c,d]] eill be flattened as (a,b),(c,d)
   var sql = "insert into myhikesDB.users (name,password) values (?);";
-  var query = connection.query(sql,[insertdata],function(err,result){
-    //var query = connection.query(sql,[values],function(err,result){
+  var query = conPool.query(sql,[insertdata],function(err,result){
+    //var query = conPool.query(sql,[values],function(err,result){
     if(!err)
     {
       console.log("row is inserted");
@@ -52,7 +52,7 @@ exports.list_all_hikes_of_a_user = function(req,res){
   var in_name = req.headers.name;
   console.log("in_name:" + in_name);
   var sql = 'select * from myhikesDB.hikeinfo where user_name = ?';
-  var query = connection.query(sql,[in_name],function(err,rows){
+  var query = conPool.query(sql,[in_name],function(err,rows){
     if(err){
       console.log("error occured while getting hikes from the database. "+err);
       res.send(err);
@@ -68,7 +68,7 @@ exports.list_all_hikes_of_a_user = function(req,res){
 
 exports.list_all_hikes = function(req,res){
   var sql = " select * from myhikesDB.hikeinfo;";
-  var query = connection.query(sql,function(err,result){
+  var query = conPool.query(sql,function(err,result){
     if(err){
       console.log("error ocoured while getting all hikes of all users.");
       res.send(err);
@@ -89,7 +89,7 @@ exports.store_user_hike_metadata = function(req,res){
   console.log(in_name);
 
   var mysql = "select id from myhikesDB.users where name = ? ;";
-  var query = connection.query(mysql,[in_name],function(err,result){
+  var query = conPool.query(mysql,[in_name],function(err,result){
     console.log(result);
   var userId = result[0].id;
     if(err)
@@ -107,8 +107,8 @@ exports.store_user_hike_metadata = function(req,res){
       //var insertdata = [userId,'vamsi','Maple falls'];
       var sql = "insert into myhikesDB.hikeinfo (user_id,user_name,hike_name,date_created,time_created) values (?,curdate(),curtime()); ";
       console.log(sql);
-      var query = connection.query(sql,[insertdata],function(err,result){
-        //var query = connection.query(sql,userId,function(err,result){
+      var query = conPool.query(sql,[insertdata],function(err,result){
+        //var query = conPool.query(sql,userId,function(err,result){
       if(err){
           console.log("error occured while storing hike details.");
           res.send(err);
@@ -129,7 +129,7 @@ exports.delete_user = function(req,res){
   var deletename = req.body.name;
   //check if user exists
   var sql2 = "select count(*) from myhikesDB.users where name = ? ;";
-  var query2 = connection.query(sql2,[deletename],function(err,result){
+  var query2 = conPool.query(sql2,[deletename],function(err,result){
     if(err){
       console.log("error ocoured while fetching the user."+err);
       res.send(err);
@@ -140,7 +140,7 @@ exports.delete_user = function(req,res){
     else{
       console.log("users exists. Deleting the user ...");
       var sql = "delete from myhikesDB.users where name = ? ;";
-      var query = connection.query(sql,[deletename],function(err,result){
+      var query = conPool.query(sql,[deletename],function(err,result){
           if(err){
             console.log("error ocoured while deleting the user.");
             res.send(err);
